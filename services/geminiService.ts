@@ -1,13 +1,14 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { AnalysisResult } from '../types';
 
-const API_KEY = process.env.API_KEY;
+// Use Vite's import.meta.env instead of process.env
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.GEMINI_API_KEY;
 
 if (!API_KEY) {
-    throw new Error("API_KEY environment variable is not set.");
+    console.warn("GEMINI_API_KEY not set. Food analysis will fail. Set VITE_GEMINI_API_KEY in .env.local");
 }
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+const ai = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null;
 
 const responseSchema = {
     type: Type.OBJECT,
@@ -128,6 +129,10 @@ Follow these rules:
 
 
 export async function analyzeFoodImage(base64Image: string, mimeType: string, language: 'fi' | 'en'): Promise<AnalysisResult> {
+    if (!ai) {
+        throw new Error("Gemini AI client not initialized. Please set VITE_GEMINI_API_KEY in .env.local");
+    }
+
     const imagePart = {
         inlineData: {
             data: base64Image,
