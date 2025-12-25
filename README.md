@@ -5,8 +5,9 @@ Modern Finnish food analyzer application powered by Google Gemini AI and Supabas
 ## ✨ Features
 
 - 📸 **AI-Powered Food Analysis** - Upload food images and get detailed nutritional information
-- 🔐 **User Authentication** - Secure login with Google via Supabase Auth
-- 📊 **Personal Dashboard** - Save and manage your food analyses
+- 🔐 **User Authentication** - Secure email/password authentication via Supabase
+- 💪 **Health Tests** - BMI, BMR, TDEE, and Ideal Weight calculators
+- 📊 **Personal Dashboard** - Save and manage your food analyses and health test results
 - 🌍 **Bilingual Support** - Finnish and English languages
 - 🎨 **Modern UI** - Beautiful, responsive design with Tailwind CSS
 - ☁️ **Cloud Storage** - Images stored securely in Supabase Storage
@@ -36,16 +37,24 @@ npm install
 
 1. Create a new project at [supabase.com](https://supabase.com)
 2. Go to SQL Editor and run the schema from `supabase-schema.sql`
-3. Enable Google OAuth in Authentication > Providers
+3. Enable Email authentication in Authentication > Providers
 4. Update `supabaseConfig.ts` with your project credentials
 
 ### 3. Set Environment Variables
 
-Create a `.env.local` file:
+Create a `.env` file in the root directory:
+
+```bash
+cp .env.example .env
+```
+
+Then edit `.env` and add your Gemini API key:
 
 ```env
-GEMINI_API_KEY=your_gemini_api_key_here
+VITE_GEMINI_API_KEY=your_gemini_api_key_here
 ```
+
+**Get your Gemini API key from**: https://makersuite.google.com/app/apikey
 
 ### 4. Run the App
 
@@ -53,13 +62,14 @@ GEMINI_API_KEY=your_gemini_api_key_here
 npm run dev
 ```
 
-The app will be available at `http://localhost:5173`
+The app will be available at `http://localhost:3001`
 
 ## 🗄️ Database Setup
 
 Run the SQL commands in `supabase-schema.sql` in your Supabase SQL Editor to:
 
 - Create the `food_analyses` table
+- Create the `health_tests` table
 - Set up Row Level Security (RLS) policies
 - Configure the `food-images` storage bucket
 - Set up storage policies
@@ -68,10 +78,10 @@ Run the SQL commands in `supabase-schema.sql` in your Supabase SQL Editor to:
 
 1. Go to your Supabase project dashboard
 2. Navigate to **Authentication > Providers**
-3. Enable **Google** provider
-4. Add your Google OAuth credentials
+3. Enable **Email** provider
+4. Disable email confirmation for development (optional)
 5. Add authorized redirect URLs:
-   - `http://localhost:5173` (development)
+   - `http://localhost:3001` (development)
    - Your production URL
 
 ## 📦 Build for Production
@@ -89,7 +99,7 @@ The app can be deployed to:
 - Any static hosting service
 
 Make sure to:
-1. Set environment variables in your hosting platform
+1. Set `VITE_GEMINI_API_KEY` environment variable in your hosting platform
 2. Update Supabase redirect URLs with your production domain
 
 ## 📝 License
@@ -101,5 +111,7 @@ MIT
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
+
+**Powered by [Voon IQ](https://vooniq.com)** - AI & Technology Solutions
 
 Made with ❤️ using React, Supabase, and Google Gemini AI
