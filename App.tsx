@@ -16,11 +16,13 @@ import LoadingSpinner from './components/LoadingSpinner';
 import WelcomeScreen from './components/WelcomeScreen';
 import Modal from './components/Modal';
 import UserDashboard from './components/UserDashboard';
+import HealthTests, { HealthTestResult } from './components/HealthTests';
 import { HeaderIcon, TwitterIcon, GithubIcon, LinkedInIcon, GoogleIcon, LogoutIcon, UserIcon } from './components/Icons';
 import { locales } from './localization/strings';
+import { saveHealthTest } from './services/supabaseService';
 
 type Language = 'fi' | 'en';
-type ModalType = 'about' | 'terms' | 'privacy' | 'dashboard' | null;
+type ModalType = 'about' | 'terms' | 'privacy' | 'dashboard' | 'health' | null;
 
 function App() {
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -144,6 +146,21 @@ function App() {
     setIsLoading(false);
   };
 
+  const handleHealthTestComplete = async (result: HealthTestResult) => {
+    if (!user) {
+      alert('Lütfen önce giriş yapın');
+      return;
+    }
+
+    try {
+      await saveHealthTest(user.id, result);
+      alert('Test sonucu kaydedildi! Dashboard\'da görebilirsiniz.');
+    } catch (err) {
+      console.error('Failed to save health test:', err);
+      alert('Test sonucu kaydedilemedi');
+    }
+  };
+
   const renderModalContent = () => {
     switch (activeModal) {
       case 'about':
@@ -224,6 +241,17 @@ function App() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                   <span className="hidden md:inline">Dashboard</span>
+                </button>
+
+                {/* Health Tests Button */}
+                <button
+                  onClick={() => setActiveModal('health')}
+                  className="flex items-center gap-2 text-xs md:text-sm font-bold text-white bg-gradient-to-r from-green-500 to-teal-500 hover:shadow-lg transition-all px-4 py-2 rounded-full active:scale-95"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="hidden md:inline">Sağlık</span>
                 </button>
 
                 {/* User Profile */}
@@ -365,8 +393,30 @@ function App() {
         />
       )}
 
+      {/* Health Tests Modal */}
+      {activeModal === 'health' && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="bg-gradient-to-r from-green-500 to-teal-500 p-6 text-white flex justify-between items-center">
+              <h2 className="text-2xl font-bold">Sağlık Testleri</h2>
+              <button
+                onClick={() => setActiveModal(null)}
+                className="text-white hover:bg-white/20 rounded-full p-2 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6">
+              <HealthTests onTestComplete={handleHealthTestComplete} strings={strings} />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Other Modals */}
-      <Modal isOpen={activeModal !== null && activeModal !== 'dashboard'} onClose={() => setActiveModal(null)} title={getModalTitle()}>
+      <Modal isOpen={activeModal !== null && activeModal !== 'dashboard' && activeModal !== 'health'} onClose={() => setActiveModal(null)} title={getModalTitle()}>
         {renderModalContent()}
       </Modal>
     </div>
