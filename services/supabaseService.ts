@@ -11,13 +11,37 @@ export interface SupabaseUser {
     };
 }
 
-// Sign in with Google
-export const signInWithGoogle = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+// Sign up with email and password
+export const signUp = async (email: string, password: string, fullName: string) => {
+    const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
         options: {
-            redirectTo: window.location.origin,
+            data: {
+                full_name: fullName,
+            }
         }
+    });
+
+    if (error) throw error;
+    return data;
+};
+
+// Sign in with email and password
+export const signIn = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+    });
+
+    if (error) throw error;
+    return data;
+};
+
+// Reset password
+export const resetPassword = async (email: string) => {
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
     });
 
     if (error) throw error;

@@ -3,12 +3,12 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { AnalysisResult as AnalysisResultType } from './types';
 import { analyzeFoodImage } from './services/geminiService';
 import {
-  signInWithGoogle,
   signOut,
   onAuthStateChange,
   saveFoodAnalysis,
   uploadFoodImage,
-  SupabaseUser
+  SupabaseUser,
+  saveHealthTest
 } from './services/supabaseService';
 import ImageUploader from './components/ImageUploader';
 import AnalysisResult from './components/AnalysisResult';
@@ -17,12 +17,12 @@ import WelcomeScreen from './components/WelcomeScreen';
 import Modal from './components/Modal';
 import UserDashboard from './components/UserDashboard';
 import HealthTests, { HealthTestResult } from './components/HealthTests';
-import { HeaderIcon, TwitterIcon, GithubIcon, LinkedInIcon, GoogleIcon, LogoutIcon, UserIcon } from './components/Icons';
+import AuthForm from './components/AuthForm';
+import { HeaderIcon, TwitterIcon, GithubIcon, LinkedInIcon, LogoutIcon, UserIcon } from './components/Icons';
 import { locales } from './localization/strings';
-import { saveHealthTest } from './services/supabaseService';
 
 type Language = 'fi' | 'en';
-type ModalType = 'about' | 'terms' | 'privacy' | 'dashboard' | 'health' | null;
+type ModalType = 'about' | 'terms' | 'privacy' | 'dashboard' | null;
 
 function App() {
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -48,6 +48,11 @@ function App() {
     const { data: { subscription } } = onAuthStateChange((user) => {
       setUser(user);
       setIsAuthLoading(false);
+
+      // Open dashboard automatically when user logs in
+      if (user && !activeModal) {
+        setActiveModal('dashboard');
+      }
     });
 
     // Check cookie consent
@@ -69,20 +74,11 @@ function App() {
     setLanguage(prevLang => prevLang === 'fi' ? 'en' : 'fi');
   }
 
-  // Handle Google Login with Supabase
-  const handleGoogleLogin = async () => {
-    try {
-      await signInWithGoogle();
-    } catch (err) {
-      console.error("Login Error", err);
-      setError("Kirjautuminen epäonnistui. Yritä uudelleen.");
-    }
-  };
-
   const handleLogout = async () => {
     try {
       await signOut();
       setUser(null);
+      setActiveModal(null);
     } catch (err) {
       console.error("Logout Error", err);
     }
@@ -202,6 +198,15 @@ function App() {
     }
   }
 
+  // If not logged in, show auth form
+  if (!user && !isAuthLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 flex items-center justify-center p-4">
+        <AuthForm onSuccess={() => { }} />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 text-app-dark font-sans flex flex-col">
       {/* Background Gradient decoration */}
@@ -229,8 +234,7 @@ function App() {
           </div>
 
           <div className="flex items-center gap-3 md:gap-4">
-            {/* Login / User Profile */}
-            {user ? (
+            {user && (
               <div className="flex items-center gap-3">
                 {/* Dashboard Button */}
                 <button
@@ -243,52 +247,23 @@ function App() {
                   <span className="hidden md:inline">Dashboard</span>
                 </button>
 
-                {/* Health Tests Button */}
-                <button
-                  onClick={() => setActiveModal('health')}
-                  className="flex items-center gap-2 text-xs md:text-sm font-bold text-white bg-gradient-to-r from-green-500 to-teal-500 hover:shadow-lg transition-all px-4 py-2 rounded-full active:scale-95"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span className="hidden md:inline">Sağlık</span>
-                </button>
-
                 {/* User Profile */}
                 <div className="flex items-center gap-3 bg-white border border-slate-200 pl-2 pr-4 py-1.5 rounded-full shadow-sm">
-                  {user.user_metadata?.avatar_url ? (
-                    <img src={user.user_metadata.avatar_url} alt={user.user_metadata?.name || 'User'} className="w-8 h-8 rounded-full border border-slate-100" />
-                  ) : (
-                    <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-app-primary">
-                      <UserIcon />
-                    </div>
-                  )}
+                  <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center text-app-primary">
+                    <UserIcon />
+                  </div>
                   <div className="hidden md:block text-sm font-bold text-gray-700 truncate max-w-[120px]">
-                    {user.user_metadata?.full_name || user.user_metadata?.name || user.email}
+                    {user.user_metadata?.full_name || user.email}
                   </div>
                   <button
                     onClick={handleLogout}
                     className="ml-2 p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
-                    title={strings.logout}
+                    title="Çıkış Yap"
                   >
                     <LogoutIcon />
                   </button>
                 </div>
               </div>
-            ) : (
-              <button
-                onClick={handleGoogleLogin}
-                disabled={isAuthLoading}
-                className="flex items-center gap-2 text-xs md:text-sm font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all px-4 py-2 rounded-full shadow-sm active:scale-95 disabled:opacity-70"
-              >
-                {isAuthLoading ? (
-                  <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  <GoogleIcon />
-                )}
-                <span className="hidden md:inline">{strings.loginGoogle}</span>
-                <span className="md:hidden">{strings.loginShort}</span>
-              </button>
             )}
 
             <button
@@ -303,30 +278,39 @@ function App() {
       </header>
 
       <main className="container mx-auto p-4 md:px-6 md:py-10 flex-grow relative z-10">
-        <div className="max-w-3xl mx-auto space-y-8">
-          {!imageDataUrl && <WelcomeScreen strings={strings} userName={user?.user_metadata?.name || user?.user_metadata?.full_name || undefined} />}
+        <div className="max-w-6xl mx-auto space-y-8">
+          {!imageDataUrl && <WelcomeScreen strings={strings} userName={user?.user_metadata?.full_name || undefined} />}
 
-          <ImageUploader
-            onImageChange={handleImageChange}
-            onAnalyze={handleAnalyzeClick}
-            onReset={handleReset}
-            imageDataUrl={imageDataUrl}
-            isLoading={isLoading}
-            strings={strings}
-          />
+          {/* Food Analysis Section */}
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h2 className="text-2xl font-bold text-app-dark mb-6">🍽️ Ruoka-analyysi</h2>
+            <ImageUploader
+              onImageChange={handleImageChange}
+              onAnalyze={handleAnalyzeClick}
+              onReset={handleReset}
+              imageDataUrl={imageDataUrl}
+              isLoading={isLoading}
+              strings={strings}
+            />
 
-          {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-6 py-4 rounded-r-xl shadow-sm animate-slide-up" role="alert">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="font-bold text-lg">{strings.errorTitle}</span>
+            {error && (
+              <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-6 py-4 rounded-r-xl shadow-sm animate-slide-up mt-4" role="alert">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-bold text-lg">{strings.errorTitle}</span>
+                </div>
+                <span className="block">{error}</span>
               </div>
-              <span className="block">{error}</span>
-            </div>
-          )}
+            )}
 
-          {isLoading && <LoadingSpinner />}
+            {isLoading && <LoadingSpinner />}
 
-          {analysis && <AnalysisResult result={analysis} strings={strings} />}
+            {analysis && <AnalysisResult result={analysis} strings={strings} />}
+          </div>
+
+          {/* Health Tests Section */}
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <HealthTests onTestComplete={handleHealthTestComplete} strings={strings} />
+          </div>
         </div>
       </main>
 
@@ -386,37 +370,15 @@ function App() {
       {activeModal === 'dashboard' && user && (
         <UserDashboard
           userId={user.id}
-          userName={user.user_metadata?.full_name || user.user_metadata?.name || 'User'}
+          userName={user.user_metadata?.full_name || user.email || 'User'}
           userEmail={user.email || ''}
           onClose={() => setActiveModal(null)}
           strings={strings}
         />
       )}
 
-      {/* Health Tests Modal */}
-      {activeModal === 'health' && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-            <div className="bg-gradient-to-r from-green-500 to-teal-500 p-6 text-white flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Sağlık Testleri</h2>
-              <button
-                onClick={() => setActiveModal(null)}
-                className="text-white hover:bg-white/20 rounded-full p-2 transition-colors"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="flex-1 overflow-y-auto p-6">
-              <HealthTests onTestComplete={handleHealthTestComplete} strings={strings} />
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Other Modals */}
-      <Modal isOpen={activeModal !== null && activeModal !== 'dashboard' && activeModal !== 'health'} onClose={() => setActiveModal(null)} title={getModalTitle()}>
+      <Modal isOpen={activeModal !== null && activeModal !== 'dashboard'} onClose={() => setActiveModal(null)} title={getModalTitle()}>
         {renderModalContent()}
       </Modal>
     </div>
