@@ -346,6 +346,27 @@ function App() {
               {strings.footerDisclaimerText}
             </p>
             <p>{strings.footerCopyrightText.replace('{year}', new Date().getFullYear().toString())}</p>
+
+            {/* Voon IQ Branding */}
+            <div className="mt-6 pt-6 border-t border-slate-800/50">
+              <p className="text-slate-400 mb-2">
+                Powered by{' '}
+                <a
+                  href="https://vooniq.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-app-primary hover:text-app-secondary font-bold transition-colors inline-flex items-center gap-1"
+                >
+                  <span className="bg-gradient-to-r from-app-primary to-app-secondary bg-clip-text text-transparent">
+                    Voon IQ
+                  </span>
+                  <svg className="w-3 h-3 text-app-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </p>
+              <p className="text-slate-600 text-xs">AI & Technology Solutions</p>
+            </div>
           </div>
         </div>
       </footer>
