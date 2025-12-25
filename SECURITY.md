@@ -20,11 +20,10 @@
 
 ### 🔑 Required Environment Variables
 
-For production deployment, set these in your hosting platform:
+For production deployment, set this in your hosting platform:
 
 ```
 VITE_OPENAI_API_KEY=sk-...
-VITE_DEEPSEEK_API_KEY=sk-...
 ```
 
 **Important**: The `VITE_` prefix is required for Vite to expose variables to the client.
@@ -35,7 +34,6 @@ If you accidentally commit or expose an API key:
 
 1. **Immediately revoke the leaked key**
    - OpenAI: https://platform.openai.com/api-keys
-   - DeepSeek: https://platform.deepseek.com/api_keys
 
 2. **Generate a new key**
    - Create a new API key with a descriptive name
@@ -70,9 +68,8 @@ Before deploying or committing:
 
 ### 📊 Monitoring API Usage
 
-Regularly check your API usage:
+Regularly check your API usage at:
 - **OpenAI**: https://platform.openai.com/usage
-- **DeepSeek**: https://platform.deepseek.com/usage
 
 Set up usage alerts to detect:
 - Unexpected spikes in usage

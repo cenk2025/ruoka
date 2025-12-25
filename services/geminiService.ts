@@ -1,9 +1,9 @@
 import OpenAI from 'openai';
 import { AnalysisResult } from '../types';
 
-// OpenAI API configuration (using DeepSeek key won't work for vision)
-// We'll use OpenAI GPT-4o-mini which supports vision
-const API_KEY = import.meta.env.VITE_OPENAI_API_KEY || import.meta.env.VITE_DEEPSEEK_API_KEY;
+// OpenAI API configuration
+// Using GPT-4o-mini which supports vision for food image analysis
+const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
 if (!API_KEY) {
     console.warn("API_KEY not set. Food analysis will fail. Set VITE_OPENAI_API_KEY in .env");

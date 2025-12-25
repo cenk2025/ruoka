@@ -50,19 +50,14 @@ Create a `.env` file in the root directory:
 cp .env.example .env
 ```
 
-Then edit `.env` and add your API keys:
+Then edit `.env` and add your OpenAI API key:
 
 ```env
 # OpenAI API Key for GPT-4o-mini Vision
 VITE_OPENAI_API_KEY=your_openai_api_key_here
-
-# DeepSeek API Key (optional alternative)
-VITE_DEEPSEEK_API_KEY=your_deepseek_api_key_here
 ```
 
-**Get your API keys from**:
-- OpenAI: https://platform.openai.com/api-keys
-- DeepSeek: https://platform.deepseek.com/api_keys
+**Get your API key from**: https://platform.openai.com/api-keys
 
 ⚠️ **SECURITY WARNING**: 
 - **NEVER** commit your `.env` file to Git
@@ -125,8 +120,7 @@ The app can also be deployed to:
 ### Environment Variables
 Make sure to set in your hosting platform:
 1. `VITE_OPENAI_API_KEY` - Your OpenAI API key
-2. `VITE_DEEPSEEK_API_KEY` - Your DeepSeek API key (optional)
-3. Update Supabase redirect URLs with your production domain
+2. Update Supabase redirect URLs with your production domain
 
 ⚠️ **Important**: Use `VITE_` prefix for all environment variables in Vite projects!
 
