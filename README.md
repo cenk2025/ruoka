@@ -15,7 +15,7 @@ Modern Finnish food analyzer application powered by Google Gemini AI and Supabas
 ## 🚀 Tech Stack
 
 - **Frontend**: React 19, TypeScript, Tailwind CSS
-- **AI**: Google Gemini API
+- **AI**: DeepSeek API (Vision + Chat)
 - **Backend**: Supabase (Auth, Database, Storage)
 - **Build Tool**: Vite
 
@@ -23,7 +23,7 @@ Modern Finnish food analyzer application powered by Google Gemini AI and Supabas
 
 - Node.js (v18 or higher)
 - Supabase account
-- Google Gemini API key
+- DeepSeek API key
 
 ## 🛠️ Setup
 
@@ -48,13 +48,13 @@ Create a `.env` file in the root directory:
 cp .env.example .env
 ```
 
-Then edit `.env` and add your Gemini API key:
+Then edit `.env` and add your DeepSeek API key:
 
 ```env
-VITE_GEMINI_API_KEY=your_gemini_api_key_here
+VITE_DEEPSEEK_API_KEY=your_deepseek_api_key_here
 ```
 
-**Get your Gemini API key from**: https://makersuite.google.com/app/apikey
+**Get your DeepSeek API key from**: https://platform.deepseek.com/api_keys
 
 ### 4. Run the App
 
@@ -99,7 +99,7 @@ The app can be deployed to:
 - Any static hosting service
 
 Make sure to:
-1. Set `VITE_GEMINI_API_KEY` environment variable in your hosting platform
+1. Set `VITE_DEEPSEEK_API_KEY` environment variable in your hosting platform
 2. Update Supabase redirect URLs with your production domain
 
 ## 📝 License
@@ -114,4 +114,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 **Powered by [Voon IQ](https://vooniq.com)** - AI & Technology Solutions
 
-Made with ❤️ using React, Supabase, and Google Gemini AI
+Made with ❤️ using React, Supabase, and DeepSeek AI

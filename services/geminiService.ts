@@ -1,51 +1,18 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import OpenAI from 'openai';
 import { AnalysisResult } from '../types';
 
-// Use Vite's import.meta.env instead of process.env
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.GEMINI_API_KEY;
+// DeepSeek API configuration
+const API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY || 'sk-5fba3c36074349d3a2715d6e5860cd89';
 
 if (!API_KEY) {
-    console.warn("GEMINI_API_KEY not set. Food analysis will fail. Set VITE_GEMINI_API_KEY in .env.local");
+    console.warn("DEEPSEEK_API_KEY not set. Food analysis will fail. Set VITE_DEEPSEEK_API_KEY in .env");
 }
 
-const ai = API_KEY ? new GoogleGenAI({ apiKey: API_KEY }) : null;
-
-const responseSchema = {
-    type: Type.OBJECT,
-    properties: {
-        isFood: { type: Type.BOOLEAN },
-        reason: { type: Type.STRING, nullable: true },
-        dishName: { type: Type.STRING, nullable: true },
-        ingredients: {
-            type: Type.ARRAY,
-            items: { type: Type.STRING },
-            nullable: true,
-        },
-        nutrition: {
-            type: Type.OBJECT,
-            properties: {
-                calories: { type: Type.STRING },
-                protein: { type: Type.STRING },
-                carbohydrates: { type: Type.STRING },
-                fat: { type: Type.STRING },
-            },
-            nullable: true,
-        },
-        recipe: {
-            type: Type.OBJECT,
-            properties: {
-                difficulty: { type: Type.STRING },
-                cookTime: { type: Type.STRING },
-                steps: {
-                    type: Type.ARRAY,
-                    items: { type: Type.STRING },
-                },
-            },
-            nullable: true,
-        },
-        uncertainty: { type: Type.STRING, nullable: true },
-    },
-};
+const openai = new OpenAI({
+    apiKey: API_KEY,
+    baseURL: 'https://api.deepseek.com',
+    dangerouslyAllowBrowser: true // Required for client-side usage
+});
 
 const promptFi = `
 Olet erittäin tarkka ruoantunnistuksen ja ravitsemuksen asiantuntija, joka toimii suomenkielisessä verkkosovelluksessa.
@@ -85,6 +52,26 @@ Noudata seuraavia sääntöjä:
 7.  **Jos kuva EI ole ruokaa:**
     *   Palauta JSON, jossa 'isFood' on 'false' ja 'reason'-kentässä on kohtelias suomenkielinen selitys, miksi ruokaa ei voitu tunnistaa.
     *   Älä palauta tällöin ravitsemus- tai reseptitietoja.
+
+Palauta JSON seuraavassa muodossa:
+{
+  "isFood": boolean,
+  "reason": string | null,
+  "dishName": string | null,
+  "ingredients": string[] | null,
+  "nutrition": {
+    "calories": string,
+    "protein": string,
+    "carbohydrates": string,
+    "fat": string
+  } | null,
+  "recipe": {
+    "difficulty": string,
+    "cookTime": string,
+    "steps": string[]
+  } | null,
+  "uncertainty": string | null
+}
 `;
 
 const promptEn = `
@@ -125,40 +112,67 @@ Follow these rules:
 7.  **If the image is NOT food:**
     *   Return a JSON with 'isFood' set to 'false' and the 'reason' field containing a polite English explanation of why no food could be identified.
     *   Do not return nutrition or recipe data in that case.
+
+Return JSON in this format:
+{
+  "isFood": boolean,
+  "reason": string | null,
+  "dishName": string | null,
+  "ingredients": string[] | null,
+  "nutrition": {
+    "calories": string,
+    "protein": string,
+    "carbohydrates": string,
+    "fat": string
+  } | null,
+  "recipe": {
+    "difficulty": string,
+    "cookTime": string,
+    "steps": string[]
+  } | null,
+  "uncertainty": string | null
+}
 `;
 
-
 export async function analyzeFoodImage(base64Image: string, mimeType: string, language: 'fi' | 'en'): Promise<AnalysisResult> {
-    if (!ai) {
-        throw new Error("Gemini AI client not initialized. Please set VITE_GEMINI_API_KEY in .env.local");
+    if (!API_KEY) {
+        throw new Error("DeepSeek API key not set. Please set VITE_DEEPSEEK_API_KEY in .env");
     }
 
-    const imagePart = {
-        inlineData: {
-            data: base64Image,
-            mimeType: mimeType,
-        },
-    };
-
-    const textPart = {
-        text: language === 'fi' ? promptFi : promptEn,
-    };
-
-    const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: { parts: [imagePart, textPart] },
-        config: {
-            responseMimeType: "application/json",
-            responseSchema: responseSchema,
-        },
-    });
-
     try {
-        const jsonText = response.text.trim();
-        const result: AnalysisResult = JSON.parse(jsonText);
+        const response = await openai.chat.completions.create({
+            model: 'deepseek-chat',
+            messages: [
+                {
+                    role: 'user',
+                    content: [
+                        {
+                            type: 'text',
+                            text: language === 'fi' ? promptFi : promptEn
+                        },
+                        {
+                            type: 'image_url',
+                            image_url: {
+                                url: `data:${mimeType};base64,${base64Image}`
+                            }
+                        }
+                    ]
+                }
+            ],
+            response_format: { type: 'json_object' },
+            temperature: 0.7,
+            max_tokens: 2000
+        });
+
+        const content = response.choices[0]?.message?.content;
+        if (!content) {
+            throw new Error("No response from DeepSeek API");
+        }
+
+        const result: AnalysisResult = JSON.parse(content);
         return result;
-    } catch (e) {
-        console.error("Failed to parse JSON response:", response.text);
-        throw new Error("Response was not valid JSON.");
+    } catch (e: any) {
+        console.error("DeepSeek API error:", e);
+        throw new Error(e.message || "Failed to analyze image with DeepSeek");
     }
 }
