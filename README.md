@@ -1,6 +1,8 @@
 # 🍽️ Ruoka-analysaattori (Food Analyzer)
 
-Modern Finnish food analyzer application powered by Google Gemini AI and Supabase.
+Modern Finnish food analyzer application powered by OpenAI GPT-4o-mini and Supabase.
+
+**🌐 Live Demo**: [food.voon.fi](https://food.voon.fi)
 
 ## ✨ Features
 
@@ -92,14 +94,25 @@ npm run build
 
 ## 🚢 Deployment
 
-The app can be deployed to:
-- Vercel
+### Quick Deploy to Vercel
+
+**📖 See [VERCEL_QUICKSTART.md](VERCEL_QUICKSTART.md) for step-by-step deployment guide**
+
+The app is optimized for Vercel deployment:
+- ✅ Automatic builds on push
+- ✅ Custom domain support (food.voon.fi)
+- ✅ Free SSL certificates
+- ✅ Edge network CDN
+
+### Other Platforms
+The app can also be deployed to:
 - Netlify
 - GitHub Pages
 - Any static hosting service
 
-Make sure to:
-1. Set `VITE_OPENAI_API_KEY` environment variable in your hosting platform
+### Environment Variables
+Make sure to set in your hosting platform:
+1. `VITE_OPENAI_API_KEY` - Your OpenAI API key
 2. Update Supabase redirect URLs with your production domain
 
 ## 📝 License
