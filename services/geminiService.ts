@@ -1,16 +1,16 @@
 import OpenAI from 'openai';
 import { AnalysisResult } from '../types';
 
-// DeepSeek API configuration
-const API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY || 'sk-5fba3c36074349d3a2715d6e5860cd89';
+// OpenAI API configuration (using DeepSeek key won't work for vision)
+// We'll use OpenAI GPT-4o-mini which supports vision
+const API_KEY = import.meta.env.VITE_OPENAI_API_KEY || import.meta.env.VITE_DEEPSEEK_API_KEY;
 
 if (!API_KEY) {
-    console.warn("DEEPSEEK_API_KEY not set. Food analysis will fail. Set VITE_DEEPSEEK_API_KEY in .env");
+    console.warn("API_KEY not set. Food analysis will fail. Set VITE_OPENAI_API_KEY in .env");
 }
 
 const openai = new OpenAI({
     apiKey: API_KEY,
-    baseURL: 'https://api.deepseek.com',
     dangerouslyAllowBrowser: true // Required for client-side usage
 });
 
@@ -136,12 +136,12 @@ Return JSON in this format:
 
 export async function analyzeFoodImage(base64Image: string, mimeType: string, language: 'fi' | 'en'): Promise<AnalysisResult> {
     if (!API_KEY) {
-        throw new Error("DeepSeek API key not set. Please set VITE_DEEPSEEK_API_KEY in .env");
+        throw new Error("OpenAI API key not set. Please set VITE_OPENAI_API_KEY in .env");
     }
 
     try {
         const response = await openai.chat.completions.create({
-            model: 'deepseek-chat',
+            model: 'gpt-4o-mini', // GPT-4o-mini supports vision and is cost-effective
             messages: [
                 {
                     role: 'user',
@@ -153,7 +153,8 @@ export async function analyzeFoodImage(base64Image: string, mimeType: string, la
                         {
                             type: 'image_url',
                             image_url: {
-                                url: `data:${mimeType};base64,${base64Image}`
+                                url: `data:${mimeType};base64,${base64Image}`,
+                                detail: 'low' // Use low detail for cost efficiency
                             }
                         }
                     ]
@@ -166,13 +167,13 @@ export async function analyzeFoodImage(base64Image: string, mimeType: string, la
 
         const content = response.choices[0]?.message?.content;
         if (!content) {
-            throw new Error("No response from DeepSeek API");
+            throw new Error("No response from OpenAI API");
         }
 
         const result: AnalysisResult = JSON.parse(content);
         return result;
     } catch (e: any) {
-        console.error("DeepSeek API error:", e);
-        throw new Error(e.message || "Failed to analyze image with DeepSeek");
+        console.error("OpenAI API error:", e);
+        throw new Error(e.message || "Failed to analyze image");
     }
 }
