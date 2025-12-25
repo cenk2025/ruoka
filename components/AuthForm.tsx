@@ -26,7 +26,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
                 onSuccess();
             } else {
                 await signUp(email, password, fullName);
-                setSuccessMessage('Kayıt başarılı! Lütfen e-postanızı kontrol edin ve hesabınızı doğrulayın.');
+                setSuccessMessage('Rekisteröinti onnistui! Voit nyt kirjautua sisään.');
                 // Clear form
                 setEmail('');
                 setPassword('');
@@ -34,7 +34,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
                 setIsLogin(true);
             }
         } catch (err: any) {
-            setError(err.message || 'Bir hata oluştu');
+            setError(err.message || 'Tapahtui virhe');
         } finally {
             setIsLoading(false);
         }
@@ -45,10 +45,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
             <div className="bg-white rounded-2xl shadow-xl p-8">
                 <div className="text-center mb-8">
                     <h2 className="text-3xl font-bold text-app-dark mb-2">
-                        {isLogin ? 'Giriş Yap' : 'Kayıt Ol'}
+                        {isLogin ? 'Kirjaudu sisään' : 'Rekisteröidy'}
                     </h2>
                     <p className="text-gray-600">
-                        {isLogin ? 'Hesabınıza giriş yapın' : 'Yeni hesap oluşturun'}
+                        {isLogin ? 'Kirjaudu tilillesi' : 'Luo uusi tili'}
                     </p>
                 </div>
 
@@ -68,14 +68,14 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
                     {!isLogin && (
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Ad Soyad
+                                Koko nimi
                             </label>
                             <input
                                 type="text"
                                 value={fullName}
                                 onChange={(e) => setFullName(e.target.value)}
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-app-primary focus:border-transparent"
-                                placeholder="Adınız Soyadınız"
+                                placeholder="Nimesi"
                                 required
                             />
                         </div>
@@ -83,21 +83,21 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            E-posta
+                            Sähköposti
                         </label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-app-primary focus:border-transparent"
-                            placeholder="ornek@email.com"
+                            placeholder="esimerkki@email.com"
                             required
                         />
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Şifre
+                            Salasana
                         </label>
                         <input
                             type="password"
@@ -109,7 +109,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
                             minLength={6}
                         />
                         {!isLogin && (
-                            <p className="text-xs text-gray-500 mt-1">En az 6 karakter</p>
+                            <p className="text-xs text-gray-500 mt-1">Vähintään 6 merkkiä</p>
                         )}
                     </div>
 
@@ -121,10 +121,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
                         {isLoading ? (
                             <div className="flex items-center justify-center gap-2">
                                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                <span>Yükleniyor...</span>
+                                <span>Ladataan...</span>
                             </div>
                         ) : (
-                            isLogin ? 'Giriş Yap' : 'Kayıt Ol'
+                            isLogin ? 'Kirjaudu sisään' : 'Rekisteröidy'
                         )}
                     </button>
                 </form>
@@ -138,7 +138,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
                         }}
                         className="text-app-primary hover:text-app-secondary font-medium transition-colors"
                     >
-                        {isLogin ? 'Hesabınız yok mu? Kayıt olun' : 'Zaten hesabınız var mı? Giriş yapın'}
+                        {isLogin ? 'Ei tiliä? Rekisteröidy' : 'Onko sinulla jo tili? Kirjaudu sisään'}
                     </button>
                 </div>
             </div>

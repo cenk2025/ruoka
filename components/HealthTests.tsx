@@ -135,36 +135,36 @@ const HealthTests: React.FC<HealthTestsProps> = ({ onTestComplete, strings }) =>
     const tests = [
         {
             id: 'bmi',
-            title: 'BMI Hesaplayıcı',
+            title: 'BMI-laskuri',
             titleEn: 'BMI Calculator',
-            description: 'Vücut Kitle İndeksinizi hesaplayın',
+            description: 'Laske painoindeksisi',
             descriptionEn: 'Calculate your Body Mass Index',
             icon: '⚖️',
             color: 'from-blue-500 to-cyan-500'
         },
         {
             id: 'bmr',
-            title: 'BMR Hesaplayıcı',
+            title: 'BMR-laskuri',
             titleEn: 'BMR Calculator',
-            description: 'Bazal Metabolizma Hızınızı öğrenin',
+            description: 'Perusaineenvaihduntasi',
             descriptionEn: 'Learn your Basal Metabolic Rate',
             icon: '🔥',
             color: 'from-orange-500 to-red-500'
         },
         {
             id: 'tdee',
-            title: 'TDEE Hesaplayıcı',
+            title: 'TDEE-laskuri',
             titleEn: 'TDEE Calculator',
-            description: 'Günlük kalori ihtiyacınızı hesaplayın',
+            description: 'Päivittäinen kalorintarve',
             descriptionEn: 'Calculate your daily calorie needs',
             icon: '📊',
             color: 'from-purple-500 to-pink-500'
         },
         {
             id: 'ideal_weight',
-            title: 'İdeal Kilo',
+            title: 'Ihannepaino',
             titleEn: 'Ideal Weight',
-            description: 'İdeal kilonuzu öğrenin',
+            description: 'Selvitä ihannepainosi',
             descriptionEn: 'Find your ideal weight',
             icon: '🎯',
             color: 'from-green-500 to-teal-500'
@@ -208,7 +208,7 @@ const HealthTests: React.FC<HealthTestsProps> = ({ onTestComplete, strings }) =>
                     {needsHeight && (
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Boy (cm)
+                                Pituus (cm)
                             </label>
                             <input
                                 type="number"
@@ -226,7 +226,7 @@ const HealthTests: React.FC<HealthTestsProps> = ({ onTestComplete, strings }) =>
                     {needsWeight && (
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Kilo (kg)
+                                Paino (kg)
                             </label>
                             <input
                                 type="number"
@@ -244,7 +244,7 @@ const HealthTests: React.FC<HealthTestsProps> = ({ onTestComplete, strings }) =>
                     {needsAge && (
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Yaş
+                                Ikä
                             </label>
                             <input
                                 type="number"
@@ -262,7 +262,7 @@ const HealthTests: React.FC<HealthTestsProps> = ({ onTestComplete, strings }) =>
                     {needsGender && (
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Cinsiyet
+                                Sukupuoli
                             </label>
                             <div className="flex gap-4">
                                 <label className="flex items-center cursor-pointer">
@@ -273,7 +273,7 @@ const HealthTests: React.FC<HealthTestsProps> = ({ onTestComplete, strings }) =>
                                         onChange={(e) => setGender(e.target.value as 'male' | 'female')}
                                         className="mr-2"
                                     />
-                                    <span>Erkek</span>
+                                    <span>Mies</span>
                                 </label>
                                 <label className="flex items-center cursor-pointer">
                                     <input
@@ -283,7 +283,7 @@ const HealthTests: React.FC<HealthTestsProps> = ({ onTestComplete, strings }) =>
                                         onChange={(e) => setGender(e.target.value as 'male' | 'female')}
                                         className="mr-2"
                                     />
-                                    <span>Kadın</span>
+                                    <span>Nainen</span>
                                 </label>
                             </div>
                         </div>
@@ -292,18 +292,18 @@ const HealthTests: React.FC<HealthTestsProps> = ({ onTestComplete, strings }) =>
                     {needsActivity && (
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Aktivite Seviyesi
+                                Aktiivisuustaso
                             </label>
                             <select
                                 value={activityLevel}
                                 onChange={(e) => setActivityLevel(e.target.value)}
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-app-primary focus:border-transparent"
                             >
-                                <option value="sedentary">Hareketsiz (Ofis işi)</option>
-                                <option value="light">Hafif Aktif (Haftada 1-3 gün egzersiz)</option>
-                                <option value="moderate">Orta Aktif (Haftada 3-5 gün egzersiz)</option>
-                                <option value="active">Aktif (Haftada 6-7 gün egzersiz)</option>
-                                <option value="very_active">Çok Aktif (Günde 2 kez egzersiz)</option>
+                                <option value="sedentary">Vähän liikuntaa (Toimistotyö)</option>
+                                <option value="light">Kevyt aktiivisuus (1-3 päivää/viikko)</option>
+                                <option value="moderate">Kohtalainen (3-5 päivää/viikko)</option>
+                                <option value="active">Aktiivinen (6-7 päivää/viikko)</option>
+                                <option value="very_active">Erittäin aktiivinen (2x päivässä)</option>
                             </select>
                         </div>
                     )}
@@ -312,7 +312,7 @@ const HealthTests: React.FC<HealthTestsProps> = ({ onTestComplete, strings }) =>
                         type="submit"
                         className="w-full bg-gradient-to-r from-app-primary to-app-secondary text-white font-bold py-3 px-6 rounded-lg hover:shadow-lg transition-all"
                     >
-                        Hesapla
+                        Laske
                     </button>
                 </form>
             </div>
@@ -322,8 +322,8 @@ const HealthTests: React.FC<HealthTestsProps> = ({ onTestComplete, strings }) =>
     return (
         <div className="space-y-6">
             <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-app-dark mb-2">Sağlık Testleri</h2>
-                <p className="text-gray-600">Sağlığınızı takip edin ve hedeflerinize ulaşın</p>
+                <h2 className="text-3xl font-bold text-app-dark mb-2">Terveystestit</h2>
+                <p className="text-gray-600">Seuraa terveyttäsi ja saavuta tavoitteesi</p>
             </div>
 
             {!activeTest ? (

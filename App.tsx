@@ -144,16 +144,16 @@ function App() {
 
   const handleHealthTestComplete = async (result: HealthTestResult) => {
     if (!user) {
-      alert('Lütfen önce giriş yapın');
+      alert('Ole hyvä ja kirjaudu sisään ensin');
       return;
     }
 
     try {
       await saveHealthTest(user.id, result);
-      alert('Test sonucu kaydedildi! Dashboard\'da görebilirsiniz.');
+      alert('Testitulos tallennettu! Voit nähdä sen Dashboard-sivulla.');
     } catch (err) {
       console.error('Failed to save health test:', err);
-      alert('Test sonucu kaydedilemedi');
+      alert('Testituloksen tallennus epäonnistui');
     }
   };
 
@@ -258,7 +258,7 @@ function App() {
                   <button
                     onClick={handleLogout}
                     className="ml-2 p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
-                    title="Çıkış Yap"
+                    title="Kirjaudu ulos"
                   >
                     <LogoutIcon />
                   </button>
