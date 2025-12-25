@@ -57,7 +57,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ userId, userName, userEma
             }
         } catch (err) {
             console.error('Error loading data:', err);
-            setError('Veri yükleme hatası');
+            setError('Tietojen lataus epäonnistui');
         } finally {
             setIsLoading(false);
         }
@@ -81,14 +81,14 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ userId, userName, userEma
     };
 
     const deleteTest = async (id: string) => {
-        if (!confirm('Bu testi silmek istediğinizden emin misiniz?')) return;
+        if (!confirm('Haluatko varmasti poistaa tämän testin?')) return;
 
         try {
             await deleteHealthTest(id);
             setHealthTests(prev => prev.filter(t => t.id !== id));
         } catch (err) {
             console.error('Error deleting test:', err);
-            alert('Silme işlemi başarısız');
+            alert('Poisto epäonnistui');
         }
     };
 
@@ -105,11 +105,11 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ userId, userName, userEma
 
     const getTestTitle = (type: string) => {
         const titles: { [key: string]: string } = {
-            bmi: 'BMI (Vücut Kitle İndeksi)',
-            bmr: 'BMR (Bazal Metabolizma Hızı)',
-            tdee: 'TDEE (Günlük Kalori İhtiyacı)',
-            ideal_weight: 'İdeal Kilo',
-            body_fat: 'Vücut Yağ Oranı'
+            bmi: 'BMI (Painoindeksi)',
+            bmr: 'BMR (Perusaineenvaihdunta)',
+            tdee: 'TDEE (Päivittäinen kalorintarve)',
+            ideal_weight: 'Ihannepaino',
+            body_fat: 'Kehon rasvaprosentti'
         };
         return titles[type] || type;
     };
@@ -131,14 +131,14 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ userId, userName, userEma
                 <div className="bg-gradient-to-r from-app-primary to-app-secondary p-6 text-white">
                     <div className="flex justify-between items-start">
                         <div>
-                            <h2 className="text-2xl font-bold mb-2">Kullanıcı Dashboard</h2>
+                            <h2 className="text-2xl font-bold mb-2">Käyttäjän Dashboard</h2>
                             <p className="text-white/90">{userName}</p>
                             <p className="text-sm text-white/70">{userEmail}</p>
                         </div>
                         <button
                             onClick={onClose}
                             className="text-white hover:bg-white/20 rounded-full p-2 transition-colors"
-                            aria-label="Kapat"
+                            aria-label="Sulje"
                         >
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -151,20 +151,20 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ userId, userName, userEma
                         <button
                             onClick={() => setActiveTab('analyses')}
                             className={`px-6 py-2 rounded-lg font-medium transition-all ${activeTab === 'analyses'
-                                    ? 'bg-white text-app-primary'
-                                    : 'bg-white/20 text-white hover:bg-white/30'
+                                ? 'bg-white text-app-primary'
+                                : 'bg-white/20 text-white hover:bg-white/30'
                                 }`}
                         >
-                            🍽️ Ruoka Analyysit
+                            🍽️ Ruoka-analyysit
                         </button>
                         <button
                             onClick={() => setActiveTab('health')}
                             className={`px-6 py-2 rounded-lg font-medium transition-all ${activeTab === 'health'
-                                    ? 'bg-white text-app-primary'
-                                    : 'bg-white/20 text-white hover:bg-white/30'
+                                ? 'bg-white text-app-primary'
+                                : 'bg-white/20 text-white hover:bg-white/30'
                                 }`}
                         >
-                            💪 Sağlık Testleri
+                            💪 Terveystestit
                         </button>
                     </div>
                 </div>
@@ -239,8 +239,8 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ userId, userName, userEma
                                 <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                 </svg>
-                                <p className="text-lg font-medium">Henüz sağlık testi yok</p>
-                                <p className="text-sm mt-2">Test sonuçlarınız burada görünecek</p>
+                                <p className="text-lg font-medium">Ei vielä terveystestejä</p>
+                                <p className="text-sm mt-2">Testituloksesi näkyvät täällä</p>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -274,7 +274,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ userId, userName, userEma
                                         </div>
 
                                         <div className="text-sm text-gray-500 border-t pt-3">
-                                            {new Date(test.created_at).toLocaleDateString('tr-TR', {
+                                            {new Date(test.created_at).toLocaleDateString('fi-FI', {
                                                 year: 'numeric',
                                                 month: 'long',
                                                 day: 'numeric',
