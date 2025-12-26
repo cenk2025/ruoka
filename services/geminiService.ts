@@ -36,20 +36,26 @@ Noudata seuraavia sääntöjä:
     *   Arvioi proteiinin, hiilihydraattien ja rasvan määrät.
     *   Arvojen on oltava realistisia.
 
-4.  **Resepti (suomeksi):**
+4.  **Allergeenit:**
+    *   Tunnista mahdolliset allergeenit ruoassa.
+    *   Sisällytä yleisimmät allergeenit: gluteeni, maitotuotteet, munat, pähkinät, soija, kala, äyriäiset, seesaminsiemenet.
+    *   Listaa vain ne allergeenit, jotka todennäköisesti ovat läsnä ruoassa.
+    *   Käytä suomenkielisiä nimiä.
+
+5.  **Resepti (suomeksi):**
     *   Kirjoita helppotajuiset suomenkieliset ohjeet, joilla tyypillinen kotikokki voi valmistaa ruoan.
     *   Sisällytä lyhyt kuvaus vaikeustasosta ja arvioitu kokonaisvalmistusaika.
     *   Ohjeiden on oltava selkeitä, loogisia ja luonnollisella suomen kielellä.
 
-5.  **Epävarmuuden viestiminen:**
+6.  **Epävarmuuden viestiminen:**
     *   Jos olet epävarma joistakin ainesosista tai valmistusmenetelmästä, mainitse tämä selkeästi suomeksi.
     *   Selitä lyhyesti, miksi arvio ei välttämättä ole tarkka (esim. epäselvä kuvakulma, piilossa olevat ainesosat, epäselvä annoskoko).
 
-6.  **Kieli ja yksiköt:**
+7.  **Kieli ja yksiköt:**
     *   KAIKKI JSON-kenttien sisältö on oltava suomeksi.
     *   Käytä metrisiä yksiköitä (g, ml, kpl, tl, rkl, °C).
 
-7.  **Jos kuva EI ole ruokaa:**
+8.  **Jos kuva EI ole ruokaa:**
     *   Palauta JSON, jossa 'isFood' on 'false' ja 'reason'-kentässä on kohtelias suomenkielinen selitys, miksi ruokaa ei voitu tunnistaa.
     *   Älä palauta tällöin ravitsemus- tai reseptitietoja.
 
@@ -70,6 +76,7 @@ Palauta JSON seuraavassa muodossa:
     "cookTime": string,
     "steps": string[]
   } | null,
+  "allergens": string[] | null,
   "uncertainty": string | null
 }
 `;
@@ -96,20 +103,26 @@ Follow these rules:
     *   Estimate protein, carbohydrate and fat levels.
     *   Values must be realistic.
 
-4.  **Recipe (in English):**
+4.  **Allergens:**
+    *   Identify potential allergens in the food.
+    *   Include common allergens: gluten, dairy, eggs, nuts, soy, fish, shellfish, sesame seeds.
+    *   List only allergens that are likely present in the dish.
+    *   Use English names.
+
+5.  **Recipe (in English):**
     *   Write easy-to-understand English instructions describing how a typical home cook could prepare this dish.
     *   Include a short description of difficulty level and estimated total cooking time.
     *   Steps must be clear, logical and written in natural English.
 
-5.  **Communicate uncertainty:**
+6.  **Communicate uncertainty:**
     *   If you are unsure about some ingredients or preparation method, clearly mention this in English.
     *   Explain briefly why the estimate may not be precise (e.g., unclear angle, hidden ingredients, unclear portion size).
 
-6.  **Language and units:**
+7.  **Language and units:**
     *   ALL content in the JSON fields must be in English.
     *   Use metric units (g, ml, pcs, tsp, tbsp, °C).
 
-7.  **If the image is NOT food:**
+8.  **If the image is NOT food:**
     *   Return a JSON with 'isFood' set to 'false' and the 'reason' field containing a polite English explanation of why no food could be identified.
     *   Do not return nutrition or recipe data in that case.
 
@@ -130,6 +143,7 @@ Return JSON in this format:
     "cookTime": string,
     "steps": string[]
   } | null,
+  "allergens": string[] | null,
   "uncertainty": string | null
 }
 `;

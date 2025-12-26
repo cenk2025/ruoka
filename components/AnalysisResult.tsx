@@ -4,8 +4,8 @@ import { FoodIcon, RecipeIcon, NutritionIcon, WarningIcon, InfoIcon } from './Ic
 import { Strings } from '../localization/strings';
 
 interface AnalysisResultProps {
-  result: AnalysisResultType;
-  strings: Strings;
+    result: AnalysisResultType;
+    strings: Strings;
 }
 
 const CardHeader: React.FC<{ title: string; icon: React.ReactNode; colorClass: string }> = ({ title, icon, colorClass }) => (
@@ -28,7 +28,7 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result, strings }) => {
                 <InfoCard className="border-l-8 border-red-400">
                     <div className="flex items-start gap-4">
                         <div className="p-3 bg-red-100 rounded-full text-red-500 flex-shrink-0">
-                             <WarningIcon />
+                            <WarningIcon />
                         </div>
                         <div>
                             <h3 className="text-xl font-bold text-gray-800 mb-2">{strings.resultTitle}</h3>
@@ -39,7 +39,7 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result, strings }) => {
             </div>
         );
     }
-    
+
     return (
         <div className="mt-8 space-y-6 animate-slide-up">
             {/* Dish Title */}
@@ -77,14 +77,14 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result, strings }) => {
                             <span className="text-xs font-bold text-orange-400 uppercase tracking-wider">{strings.nutritionCalories}</span>
                         </div>
                         <div className="bg-blue-50 p-4 rounded-2xl border border-blue-100 flex flex-col items-center text-center">
-                             <span className="text-xl font-bold text-blue-600 mb-1">{result.nutrition.protein}</span>
+                            <span className="text-xl font-bold text-blue-600 mb-1">{result.nutrition.protein}</span>
                             <span className="text-xs font-bold text-blue-400 uppercase tracking-wider">{strings.nutritionProtein}</span>
                         </div>
-                         <div className="bg-yellow-50 p-4 rounded-2xl border border-yellow-100 flex flex-col items-center text-center">
+                        <div className="bg-yellow-50 p-4 rounded-2xl border border-yellow-100 flex flex-col items-center text-center">
                             <span className="text-xl font-bold text-yellow-600 mb-1">{result.nutrition.carbohydrates}</span>
                             <span className="text-xs font-bold text-yellow-400 uppercase tracking-wider">{strings.nutritionCarbs}</span>
                         </div>
-                         <div className="bg-red-50 p-4 rounded-2xl border border-red-100 flex flex-col items-center text-center">
+                        <div className="bg-red-50 p-4 rounded-2xl border border-red-100 flex flex-col items-center text-center">
                             <span className="text-xl font-bold text-red-600 mb-1">{result.nutrition.fat}</span>
                             <span className="text-xs font-bold text-red-400 uppercase tracking-wider">{strings.nutritionFat}</span>
                         </div>
@@ -92,18 +92,45 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result, strings }) => {
                 </InfoCard>
             )}
 
+            {/* Allergens */}
+            <InfoCard>
+                <CardHeader title={strings.allergensTitle} icon={<WarningIcon />} colorClass="text-red-500 bg-red-50" />
+                {result.allergens && result.allergens.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                        {result.allergens.map((allergen, index) => (
+                            <span
+                                key={index}
+                                className="px-4 py-2 rounded-full bg-red-50 text-red-700 border-2 border-red-200 font-semibold text-sm flex items-center gap-2 hover:bg-red-100 transition-colors"
+                            >
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                </svg>
+                                {allergen}
+                            </span>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="flex items-center gap-3 bg-green-50 p-4 rounded-xl border border-green-200">
+                        <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span className="text-green-700 font-medium">{strings.allergensNone}</span>
+                    </div>
+                )}
+            </InfoCard>
+
             {/* Recipe */}
             {result.recipe && (
                 <InfoCard>
                     <CardHeader title={strings.recipeTitle} icon={<RecipeIcon />} colorClass="text-app-primary bg-indigo-50" />
-                    
+
                     <div className="flex flex-wrap gap-3 mb-6">
                         <span className="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 text-sm font-semibold flex items-center gap-2">
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                             {result.recipe.difficulty}
                         </span>
                         <span className="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 text-sm font-semibold flex items-center gap-2">
-                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             {result.recipe.cookTime}
                         </span>
                     </div>
@@ -120,9 +147,9 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ result, strings }) => {
                     </div>
                 </InfoCard>
             )}
-            
+
             {result.uncertainty && (
-                 <div className="bg-blue-50/50 border border-blue-100 rounded-2xl p-4 flex gap-3 items-start">
+                <div className="bg-blue-50/50 border border-blue-100 rounded-2xl p-4 flex gap-3 items-start">
                     <div className="text-blue-400 mt-0.5">
                         <InfoIcon />
                     </div>

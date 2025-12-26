@@ -19,5 +19,6 @@ export interface AnalysisResult {
   ingredients?: string[];
   nutrition?: Nutrition;
   recipe?: Recipe;
+  allergens?: string[];
   uncertainty?: string;
 }
