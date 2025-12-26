@@ -18,6 +18,7 @@ import Modal from './components/Modal';
 import UserDashboard from './components/UserDashboard';
 import HealthTests, { HealthTestResult } from './components/HealthTests';
 import AuthForm from './components/AuthForm';
+import LandingPage from './components/LandingPage';
 import { HeaderIcon, TwitterIcon, GithubIcon, LinkedInIcon, LogoutIcon, UserIcon } from './components/Icons';
 import { locales } from './localization/strings';
 
@@ -198,12 +199,14 @@ function App() {
     }
   }
 
-  // If not logged in, show auth form
+  // If not logged in, show landing page
   if (!user && !isAuthLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 flex items-center justify-center p-4">
-        <AuthForm onSuccess={() => { }} />
-      </div>
+      <LandingPage
+        strings={strings}
+        language={language}
+        onLanguageToggle={handleLanguageToggle}
+      />
     );
   }
 
